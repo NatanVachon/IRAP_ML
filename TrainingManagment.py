@@ -68,7 +68,6 @@ class TrainingManager:
         print("Epochs number: " + str(self.params["epochs_nb"]))
         print("Batch size: " + str(self.params["batch_size"]))
         print("Test size: " + str(self.params["test_size"]))
-        print("Loss function: " + str(self.params["loss_function"]))
 
     def run_training(self, dataset, loss_function = mlp.jaccard_distance):
         """
