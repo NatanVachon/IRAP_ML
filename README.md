@@ -5,7 +5,7 @@ This tutorial will show you how to be able to use the library and how to use it.
 # Summary
   - Installation
   - Data format
-  - Functions explanation
+  - Library explanation
 
 # Installation
 Environement: (Optional)
@@ -53,3 +53,51 @@ Environement: (Optional)
   - Each column represents a feature
   - One of the columns isn't a feature, it's name is "label" and it represents the sample's class
   
+# Library explanation
+  All of this library is based on the TrainingManager class. This class stores everything about trainings, tests, predctions ...  
+  
+  To understand how this works, lets train a mlp.  
+  First we need to import the TrainingManagment file and create a training manager:  
+  ```Python
+  import TrainingManagment as tm
+  manager = tm.TrainingManager()
+  ```
+  To set it's name, simply use:
+  ```Python
+  manager.name = "tutorial"
+  ```
+  
+  You can now modify our parameters, for instance:  
+  ```Python
+  manager["batch_size"] = 64
+  ```  
+  The parameters you can change are:  
+  - layers_sizes: (List) Each element of the list is the number of neurons in the corresponding layer (including input and output layers).
+  - layers_activations: (List) List of strings representing the activation function for each layer (ex: ["relu", "tanh", "softmax"]).
+  - epochs_nb: Number of epochs.
+  - batch_size: Number of samples in each batch.
+  - test_size: Proportion of samples used for test.
+  
+  To check that everything is ready before training the model, you cas use the print_param() function:
+  ```Python
+  manager.print_param()
+  
+  Name: tutorial
+  Layers sizes: [8, 8, 3, 3]
+  Layers activations: ['relu', 'relu', 'tanh', 'softmax']
+  Epochs number: 50
+  Batch size: 64
+  Test size: 0.2
+  ```
+  
+  Now that everything is ready, we can launch the training by typing:
+  ```Python
+  history = manager.run_training(dataset=my_dataframe, loss_function=my_loss_function, verbose=1)
+  ```
+  Arguments:  
+  - dataset: DataFrame in the required format.  
+  - loss_function: Loss function used during the training, it uses the Jacquard distance by default.
+  - verbose: Amount of training feedback you want (0, 1 or 2). If you don't know what it is, you don't care about it.
+  
+  Returns:
+  - history: Training history.
