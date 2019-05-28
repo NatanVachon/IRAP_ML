@@ -1,7 +1,8 @@
+## IRAP Multiclass MLP Tutorial
 This is a library used for multiclass prediction problems using multilayers perceptrons.
 This tutorial will show you how to be able to use the library and how to use it.
 
-# Summary:
+# Summary
   - Installation
   - Data format
   - Functions explanation
