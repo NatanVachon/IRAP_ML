@@ -32,34 +32,44 @@ def split_data(raw_data, test_size = 0.3, ordered = False, start_index = 0):
         (These variables are called '_timed' because they still contain the 'epoch' information of the initial data)
     """
     y = pd.DataFrame()
-    y['label'] = raw_data['label']
 
-    X = raw_data.copy().drop("label", axis=1)
-
-    if ordered :
-        if start_index == 0:
-            split_index = int(test_size*raw_data.count()[0])
-
-            X_test_timed = X.iloc[0:split_index,:]
-            y_test_timed = y.iloc[0:split_index,:]
-
-            X_train_timed = X.iloc[split_index:,:]
-            y_train_timed = y.iloc[split_index:,:]
-
-        else :
-            split_index1 = start_index
-            split_index2 = start_index + int(test_size*raw_data.count()[0])
-
-            X_test_timed = X.iloc[split_index1:split_index2,:]
-            y_test_timed = y.iloc[split_index1:split_index2,:]
-            X_test_timed.index = [i for i in range(X_test_timed.count()[0])]
-            y_test_timed.index = [i for i in range(y_test_timed.count()[0])]
-
-            X_train_timed = pd.concat([X.iloc[0:split_index1,:], X.iloc[split_index2:,:]], ignore_index=True)
-            y_train_timed = pd.concat([y.iloc[0:split_index1,:], y.iloc[split_index2:,:]], ignore_index=True)
-
+    if(type(raw_data) is tuple):
+        # Everything is already split
+        X_train_timed = raw_data[0].drop("label", axis=1)
+        X_test_timed = raw_data[1].drop("label", axis=1)
+        y_train_timed = pd.DataFrame()
+        y_train_timed["label"] = raw_data[0]["label"]
+        y_test_timed = pd.DataFrame()
+        y_test_timed["label"] = raw_data[1]["label"]
     else:
-        X_train_timed, X_test_timed, y_train_timed, y_test_timed = train_test_split(X,y,test_size = test_size)
+        y['label'] = raw_data['label']
+
+        X = raw_data.copy().drop("label", axis=1)
+
+        if ordered :
+            if start_index == 0:
+                split_index = int(test_size*raw_data.count()[0])
+
+                X_test_timed = X.iloc[0:split_index,:]
+                y_test_timed = y.iloc[0:split_index,:]
+
+                X_train_timed = X.iloc[split_index:,:]
+                y_train_timed = y.iloc[split_index:,:]
+
+            else :
+                split_index1 = start_index
+                split_index2 = start_index + int(test_size*raw_data.count()[0])
+
+                X_test_timed = X.iloc[split_index1:split_index2,:]
+                y_test_timed = y.iloc[split_index1:split_index2,:]
+                X_test_timed.index = [i for i in range(X_test_timed.count()[0])]
+                y_test_timed.index = [i for i in range(y_test_timed.count()[0])]
+
+                X_train_timed = pd.concat([X.iloc[0:split_index1,:], X.iloc[split_index2:,:]], ignore_index=True)
+                y_train_timed = pd.concat([y.iloc[0:split_index1,:], y.iloc[split_index2:,:]], ignore_index=True)
+
+        else:
+            X_train_timed, X_test_timed, y_train_timed, y_test_timed = train_test_split(X,y,test_size = test_size)
 
     return X_train_timed, X_test_timed, y_train_timed, y_test_timed
 

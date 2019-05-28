@@ -70,7 +70,7 @@ def create_model(lay_s, act, dropout=0.0):
             model.add(Dropout(dropout))
     return model
 
-def compile_and_fit(model, X_train, y_train, X_test, y_test, n_epochs, b_s, loss_function = jaccard_distance):
+def compile_and_fit(model, X_train, y_train, X_test, y_test, n_epochs, b_s, loss_function = jaccard_distance, verbose=1):
     """
     Arguments:
         - model : model to compile and train
@@ -83,11 +83,11 @@ def compile_and_fit(model, X_train, y_train, X_test, y_test, n_epochs, b_s, loss
         training is the history of the training
     """
     model.compile(optimizer = 'adam', loss = [loss_function], metrics = ['acc'])
-    training = model.fit(X_train, y_train, validation_data = (X_test, y_test), epochs = n_epochs, batch_size = b_s, verbose = 1)
+    training = model.fit(X_train, y_train, validation_data = (X_test, y_test), epochs = n_epochs, batch_size = b_s, verbose = verbose)
     return training
 
 def run_training(datasets, layers_sizes = LAYERS_SIZES, layers_activations = LAYERS_ACTIVATIONS, epochs_nb = EPOCHS_NB,
-                 batch_size = BATCH_SIZE, test_size = TEST_SIZE, loss_function = jaccard_distance, dropout = 0.0):
+                 batch_size = BATCH_SIZE, loss_function = jaccard_distance, dropout = 0.0, verbose=1):
     """
     Function training a neural network according to some parameters and dataset
 
@@ -102,7 +102,7 @@ def run_training(datasets, layers_sizes = LAYERS_SIZES, layers_activations = LAY
     Returns: trained mlp, training history
     """
     ANN = create_model(layers_sizes, layers_activations, dropout = dropout)
-    training = compile_and_fit(ANN, datasets[0], datasets[2], datasets[1], datasets[3], epochs_nb, batch_size, loss_function=loss_function)
+    training = compile_and_fit(ANN, datasets[0], datasets[2], datasets[1], datasets[3], epochs_nb, batch_size, loss_function=loss_function, verbose=verbose)
     return ANN, training
 
 def get_prob(model, scaler, X_test):
