@@ -1,4 +1,4 @@
-## IRAP Multiclass MLP Tutorial
+# IRAP Multiclass MLP Tutorial
 This is a library used for multiclass prediction problems using multilayers perceptrons.
 This tutorial will show you how to be able to use the library and how to use it.
 
@@ -54,6 +54,7 @@ Environement: (Optional)
   - One of the columns isn't a feature, it's name is "label" and it represents the sample's class
   
 # Library explanation
+## Initialization
   All of this library is based on the TrainingManager class. This class stores everything about trainings, tests, predctions ...  
   
   To understand how this works, lets train a mlp.  
@@ -89,7 +90,7 @@ Environement: (Optional)
   Batch size: 64
   Test size: 0.2
   ```
-  
+  ## Training
   Now that everything is ready, we can launch the training by typing:
   ```Python
   history = manager.run_training(dataset=my_dataframe, loss_function=my_loss_function, verbose=1)
@@ -101,3 +102,11 @@ Environement: (Optional)
   
   Returns:
   - history: Training history.
+
+  ## Predictions 
+  You can either predict class or raw probabilities by doing:
+  ```Python
+  pred_classes = manager.get_pred(data=input_data)
+  pred_probas = manager.get_prob(data=input_data)
+  ```  
+  
