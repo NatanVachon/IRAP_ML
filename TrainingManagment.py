@@ -12,13 +12,15 @@ import mlp
 import preprocessing as prp
 import pickle as pkl
 import pandas as pd
+import evaluation as ev
+import numpy as np
 from sklearn.metrics import confusion_matrix
 import os
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                                                    DEFAULT PARAMETERS
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-SAVE_PATH = "../Data/managers/"
+SAVE_PATH = ""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
                                                    CLASSES DEFINITION
@@ -69,7 +71,7 @@ class TrainingManager:
         print("Batch size: " + str(self.params["batch_size"]))
         print("Test size: " + str(self.params["test_size"]))
 
-    def run_training(self, dataset=None, loss_function = mlp.jaccard_distance, verbose=1):
+    def run_training(self, dataset=None, weight=0, loss_function = mlp.jaccard_distance, verbose=1):
         """
         Train a new neural network according to the manager's paremeters
         dataset: DataFrame whose columns are features and lines are train samples
@@ -79,9 +81,14 @@ class TrainingManager:
         # Prepare data
         split_dataset = prp.split_data(dataset, test_size=self.params["test_size"])
         train_dataset, self.scaler = prp.scale_and_format(split_dataset[0], split_dataset[1], split_dataset[2], split_dataset[3])
+        if weight:
+            weight_list = prp.compute_weights(split_dataset[2])
+        else:
+            weight_list = None
+        
         # Train
         self.model, history = mlp.run_training(train_dataset, layers_sizes=self.params["layers_sizes"], layers_activations=self.params["layers_activations"], epochs_nb=self.params["epochs_nb"],
-                                               batch_size=self.params["batch_size"], loss_function=loss_function, verbose=verbose)
+                                               batch_size=self.params["batch_size"], weight_list = weight_list, loss_function=loss_function, verbose=verbose)
         # return history
         return history
 

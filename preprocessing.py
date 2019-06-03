@@ -9,6 +9,7 @@ This file contains functions used for data preprocessing
                                                        IMPORTS
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import train_test_split
 from keras.utils import np_utils
 from sklearn.preprocessing import LabelEncoder
@@ -31,8 +32,13 @@ def split_data(raw_data, test_size = 0.3, ordered = False, start_index = 0):
         X_train_timed, y_train_timed, X_test_timed, y_test_timed
         (These variables are called '_timed' because they still contain the 'epoch' information of the initial data)
     """
+    if((type(raw_data) is tuple) and (len(raw_data) == 4)):
+        # Returned raw
+        print(type(raw_data[0]))
+        return raw_data
+    
     y = pd.DataFrame()
-
+    
     if(type(raw_data) is tuple):
         # Everything is already split
         X_train_timed = raw_data[0].drop("label", axis=1)
@@ -62,15 +68,15 @@ def split_data(raw_data, test_size = 0.3, ordered = False, start_index = 0):
 
                 X_test_timed = X.iloc[split_index1:split_index2,:]
                 y_test_timed = y.iloc[split_index1:split_index2,:]
-                X_test_timed.index = [i for i in range(X_test_timed.count()[0])]
-                y_test_timed.index = [i for i in range(y_test_timed.count()[0])]
+                X_test_timed.index = [i for i in range(len(X_test_timed))]
+                y_test_timed.index = [i for i in range(len(X_test_timed))]
 
                 X_train_timed = pd.concat([X.iloc[0:split_index1,:], X.iloc[split_index2:,:]], ignore_index=True)
                 y_train_timed = pd.concat([y.iloc[0:split_index1,:], y.iloc[split_index2:,:]], ignore_index=True)
 
         else:
             X_train_timed, X_test_timed, y_train_timed, y_test_timed = train_test_split(X,y,test_size = test_size)
-
+    
     return X_train_timed, X_test_timed, y_train_timed, y_test_timed
 
 
@@ -124,3 +130,18 @@ def one_hot_encode(labels):
     # convert integers to dummy variables (i.e. one hot encoded)
     y = np_utils.to_categorical(encoded)
     return y
+
+def compute_weights(Y_train):
+    
+    # Create a weight list for unbalanced datasets
+    weight_list = []
+    class_info = np.unique(Y_train['label'],return_counts=1)
+    for label in Y_train['label']:
+        index = next(k for k, e in enumerate(class_info[0]) if e == label)
+        weight_list.append(class_info[1].sum()/class_info[1][index])
+    weight_list = np.array(weight_list)
+    return weight_list
+
+    
+    
+    
