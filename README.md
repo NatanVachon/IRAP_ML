@@ -56,6 +56,13 @@ Environement: (Optional)
 # Library explanation
 ## Initialization
   All of this library is based on the TrainingManager class. This class stores everything about trainings, tests, predctions ...  
+  This class contains:  
+  - name: Name of the manager  
+  - params: Training parameters  
+  - model: Trained model  
+  - scaler: sklearn.preprocessing.StandardScaler computed during training
+  - cm: Confusion matrix
+  - remarks: String you can use to store special remarks
   
   To understand how this works, lets train a mlp.  
   First we need to import the TrainingManagment file and create a training manager:  
@@ -106,7 +113,38 @@ Environement: (Optional)
   ## Predictions 
   You can either predict class or raw probabilities by doing:
   ```Python
-  pred_classes = manager.get_pred(data=input_data)
-  pred_probas = manager.get_prob(data=input_data)
+  pred_classes = manager.get_pred(input_data)
+  pred_probas = manager.get_prob(input_data)
   ```  
+  Arguments:  
+  - input_data: Dataframe containing data to predict  
   
+  Returns:
+  - pred_classes: DataFrame whose only column contains predicted labels  
+  - pred_probas: DataFrame containing a number of columns equal to number of class. Each cell contains the probability for each sample for the corresponding class  
+  
+  ## Test
+  Now your model model is trained, you can test it to compute metrics by using:  
+  ```Python
+  confusion_matrix = manager.test(data_test)
+  ```
+  Arguments:  
+  - data_test: DataFrame containing test data  
+  
+  Returns:  
+  - confusion_matrix: Computed confusion matrix  
+  
+  The computed confusion matrix is then saved in the manager.cm attribute.
+  
+  ## Save/Load
+  To save and load managers, simply use:
+  ```Python
+  manager.save(path)
+  manager = tm.load_manager(path)
+  ```
+  For instance with our example:
+  ```Python
+  manager.save("Data/managers") # Save manager
+  del manager # Delete manager
+  manager = tm.load_manager("Data/managers/tutorial") # Load previous manager
+  ```
