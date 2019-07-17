@@ -21,7 +21,7 @@ Environement: (Optional)
   And to leave it type:  
   `conda deactivate`  
   
-  Now, let's install the libraries we need.  
+  Once you are in the virtual environement, let's install the libraries we need.  
   To install the needed libraries, type the following commands in the anaconda command prompt:  
   ```
   conda install numpy
